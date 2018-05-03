@@ -12,28 +12,17 @@ searchBtn.addEventListener('click',function(e) {
     const queryTerm = termEl.value
     const location = locationEl.value
     searchYelp(location,queryTerm)
-
+    const prices = getCheckedValues(document.querySelectorAll('[name=price]:checked'));
 })
 
-function writeCheckedIds() {
-  var ids = getCheckedIds();
-  var output = document.getElementById('ids');
-  output.value = ids.join(', ');
-}
-function getCheckedIds() {
-  var checkedCbs = document.querySelectorAll('#priceTree input[type="checkbox"]:checked');
-var ids = [];
-for (var i = 0; i < checkedCbs.length; i++) ids.push(checkedCbs[i].id);
-  return ids;
-}
 
-
-function searchYelp(location, queryTerm){
+function searchYelp(location, queryTerm, prices){
   axios.get('https://circuslabs.net/proxies/yelp-fusion-proxy/', {
       params: {
         '_ep': '/businesses/search',
         'term': queryTerm,
         'location': location,
+        'price': prices,
       },
       headers: {
         'Authorization': 'Bearer ' + API_KEY
@@ -44,21 +33,25 @@ function searchYelp(location, queryTerm){
       });    
 }
 
-function checkbox(){
-  var checkboxes = document.getElementsByName('price');
-  var checkboxesChecked = [];
-  for (var i=0; i<checkboxes.length; i++) {
-     if (checkboxes[i].checked) {
-        checkboxesChecked.push(checkboxes[i].value);
-     }
+function getCheckedValues(checkedItems){
+  let allChecked = '';
+  for (var i = checkedItems.length - 1; i >= 0; i--){
+    allChecked = allChecked + ',' + checkedItem
   }
-  console.log(checkboxes)
-}
+    return allChecked
+  }
+  /* 
+  const checkedValues = [...checkedItems].map(function(checkedItems){
+    return checkedItem.value;
+  })
+  const allChecked = checkedValues.join(',');
+  return allChecked
+  */
 
-checkbox()
 
 function generateSuccessHTMLOutput(response) {
   response.data.businesses.forEach(business => {
+      resultsEl.innerHTML = "";
       let $li = document.createElement("li")
       let $h2 = document.createElement("h2")
       let $pAddress = document.createElement("p")
@@ -86,3 +79,13 @@ function generateSuccessHTMLOutput(response) {
 
 
 }());
+
+ /*  
+ 
+
+ 
+ 
+ 
+ 
+ 
+ */
